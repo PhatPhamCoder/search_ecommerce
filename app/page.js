@@ -48,7 +48,7 @@ export default function Home() {
     if (keySearch) {
       console.log("keySearch::", keySearch.trim());
     } else {
-      console.log("speech to text:::", transcript);
+      console.log("speech to text:::", transcript.trim());
     }
   };
 
