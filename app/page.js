@@ -6,8 +6,10 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { MdOutlineSettingsVoice, MdKeyboardVoice } from "react-icons/md";
-
+import { useState } from "react";
+import { AiOutlineSearch } from "react-icons/ai";
 export default function Home() {
+  const [keySearch, setKeySearch] = useState("");
   const {
     transcript,
     browserSupportsSpeechRecognition,
@@ -29,7 +31,6 @@ export default function Home() {
   const handleListening = () => {
     if (listening) {
       SpeechRecognition.stopListening();
-      handleCheckGrammar();
     } else {
       startListening();
     }
@@ -37,18 +38,31 @@ export default function Home() {
 
   const handleReset = () => {
     resetTranscript();
+    setKeySearch("");
+  };
+
+  const handleClickSearch = () => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+    }
+    if (keySearch) {
+      console.log("keySearch::", keySearch.trim());
+    } else {
+      console.log("speech to text:::", transcript);
+    }
   };
 
   return (
     <div
       className={`flex justify-center items-center grid-cols-1 mx-auto max-w-2xl gap-2 my-2`}
     >
-      <div className="flex items-center w-full gap-2 border-2 rounded-xl hover:border-green-500">
+      <div className="flex items-center w-full gap-2 px-4 py-2 border-2 rounded-xl hover:border-green-500">
         <input
           type="text"
           placeholder="Nhập sản phẩm tìm kiếm"
-          className="outline-none w-full px-2 py-4 ml-2 border"
-          value={transcript}
+          className="outline-none w-full ml-2"
+          value={keySearch || transcript}
+          onChange={(e) => setKeySearch(e.target.value)}
         />
         <div className={`${transcript ? "block" : "hidden"}`}>
           <button
@@ -60,23 +74,28 @@ export default function Home() {
             X
           </button>
         </div>
+
         <button
           type="button"
           onClick={handleListening}
-          className={`${
-            listening ? "text-blue-500" : "text-red-500"
-          } flex items-center justify-center gap-2 rounded-lg text-white font-bold text-xl pr-4`}
+          className={`flex items-center justify-center gap-2 rounded-lg text-white font-bold text-xl pr-4`}
         >
           {!listening ? (
             <div className="flex items-center gap-1 justify-center">
-              <MdKeyboardVoice size={30} />
+              <MdKeyboardVoice size={30} color="red" />
             </div>
           ) : (
             <div className="flex items-center gap-1 justify-center">
-              <MdOutlineSettingsVoice size={30} />
+              <MdOutlineSettingsVoice size={30} color="red" />
             </div>
           )}
         </button>
+        <div
+          className="mr-4 cursor-pointer font-bold"
+          onClick={() => handleClickSearch()}
+        >
+          <AiOutlineSearch size={20} />
+        </div>
       </div>
     </div>
   );
